@@ -41,13 +41,12 @@ function navigateBy(delta){
  const boundary=direction>0?anchors.find(y=>y>current+1&&y<=destination):anchors.toReversed().find(y=>y<current-1&&y>=destination);
  if(boundary!==undefined){wheelGate={at:boundary,direction};moveTo(boundary);}else moveTo(destination);
 }
-function wheelMove(delta,input){if(mobile.matches&&input==='touch'){wheelGate=null;motion.scrollTo(Math.max(0,Math.min(motion.limit,motion.animatedScroll+delta)),{immediate:true,force:true});return;}navigateBy(Math.max(-innerHeight*2,Math.min(innerHeight*2,delta*(input==='touch'?1.2:1.6))))}
+function wheelMove(delta,input){if(mobile.matches&&input==='touch'){wheelGate=null;moveTo(Math.max(0,Math.min(motion.limit,motion.targetScroll+delta*1.2)),{force:true,programmatic:false});return;}navigateBy(Math.max(-innerHeight*2,Math.min(innerHeight*2,delta*(input==='touch'?1.2:1.6))))}
 function keyboard(key,shift){const jumps={ArrowDown:80,ArrowUp:-80,PageDown:innerHeight*.65,PageUp:-innerHeight*.65,' ':innerHeight*.65*(shift?-1:1)};if(key==='Home'){wheelGate=null;moveTo(0)}else if(key==='End'){wheelGate=null;moveTo(motion.limit)}else if(key in jumps)navigateBy(jumps[key]);}
 window.addEventListener('message',e=>{if(![heroFrame.contentWindow,followFrame.contentWindow].includes(e.source)||e.data?.channel!==channel)return;const d=e.data;
  if(d.type==='open-link'){const url=String(d.url||'');if(/^https:\/\/((?:www\.)?corpcore\.com\.br|github\.com|www\.linkedin\.com)(\/|$)/.test(url))window.open(url,'_blank','noopener');else if(/^(mailto:kleionfsa2020@live\.com|tel:\+5575991801820)$/.test(url))location.href=url;}
  else if(d.type==='open-cv')window.open(new URL('assets/Kleyon-Almeida.pdf',location.href).href,'_blank','noopener');
- else if(d.type==='touch-start'&&mobile.matches){wheelGate=null;motion.scrollTo(motion.animatedScroll,{immediate:true,force:true});}
- else if(d.type==='touch-end'&&mobile.matches){const velocity=Math.max(-2.5,Math.min(2.5,Number(d.velocity)||0));if(Math.abs(velocity)>.08)motion.scrollTo(motion.animatedScroll+velocity*220,{duration:.65,easing:t=>1-Math.pow(1-t,3),force:true});}
+ else if(d.type==='touch-start'&&mobile.matches){wheelGate=null;}
  else if(d.type==='wheel')wheelMove(Number(d.delta)||0,d.input);
  else if(d.type==='follow-petrol'){nav.classList.toggle('is-petrol',Boolean(d.petrol));requestUpdate();}
  else if(d.type==='follow-theme'){nav.classList.toggle('is-contact',Boolean(d.contact));requestUpdate();}

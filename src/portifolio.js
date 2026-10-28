@@ -13,7 +13,7 @@ const post=(frame,data)=>frame.contentWindow.postMessage({channel,...data},'*');
 function activity(frame,active,isHero){const previous=isHero?lastHeroActive:lastFollowActive;if(active!==previous){post(frame,{type:'activity',active});if(isHero)lastHeroActive=active;else lastFollowActive=active;}}
 function measure(){
  const source=timeline.toSource(Math.max(0,motion.animatedScroll-followStart)),heroProgress=clamp(motion.animatedScroll/followStart),inHero=motion.animatedScroll<followStart;
- aboutReveal=innerHeight*.42;aboutOverflow=Math.max(0,about.scrollHeight+parseFloat(getComputedStyle(about).top)+35-innerHeight);aboutEnd=aboutReveal+aboutOverflow;entryDistance=innerHeight*ratio;followStart=aboutEnd+entryDistance;
+ aboutReveal=innerHeight*(mobile.matches?.22:.42);aboutOverflow=Math.max(0,about.scrollHeight+parseFloat(getComputedStyle(about).top)+35-innerHeight);aboutEnd=aboutReveal+aboutOverflow;entryDistance=innerHeight*ratio;followStart=aboutEnd+entryDistance;
  timeline=PortifolioTimeline.create(stops,Math.max(0,followHeight-innerHeight),innerHeight,ratio,readingRanges);window.__portifolioTimeline={...timeline,entryDistance,followStart,aboutReveal,aboutEnd,aboutOverflow,frames,stops,readingRanges};
  space.style.height=`${innerHeight+followStart+timeline.length}px`;motion.dimensions.resize();
  const position=inHero?heroProgress*followStart:followStart+timeline.toTrack(source);if(Math.abs(motion.animatedScroll-position)>.5)motion.scrollTo(position,{immediate:true});lastScroll=-1;update();
@@ -27,6 +27,7 @@ function update(){
  const mode=p===0?'hero':p===1?'follow':'transition';if(mode!==lastMode){follow.style.visibility=p>0?'visible':'hidden';hero.style.visibility=p===1?'hidden':'visible';if(p===1)follow.style.transform='translate3d(0,0,0)';document.documentElement.dataset.section=mode;lastMode=mode;}
  follow.style.pointerEvents=p>.96?'auto':'none';nav.classList.toggle('is-follow',p>.65);if(p===0)nav.classList.remove('is-contact','is-petrol');
  const sourceY=timeline.toSource(Math.max(0,y-followStart));if(sourceY!==lastScroll){post(followFrame,{type:'scroll',y:sourceY});lastScroll=sourceY;}
+ if(mobile.matches){const color=p<.65?'#f8f8f3':nav.classList.contains('is-contact')?'#111211':nav.classList.contains('is-petrol')?'#104a4d':stops[3]!==undefined&&sourceY>=stops[3]-innerHeight*.2?'#f3f2eb':'#c5939d';document.documentElement.style.setProperty('--mobile-page-background',color);const meta=document.querySelector('meta[name="theme-color"]');if(meta&&meta.content!==color)meta.content=color;}
  if(heroReady&&followReady){activity(heroFrame,p<1,true);activity(followFrame,p>0,false);}progress.style.transform=`scaleY(${y/Math.max(1,followStart+timeline.length)})`;
 }
 function requestUpdate(){if(!ticking){ticking=true;requestAnimationFrame(update)}}
@@ -40,14 +41,16 @@ function navigateBy(delta){
  const boundary=direction>0?anchors.find(y=>y>current+1&&y<=destination):anchors.toReversed().find(y=>y<current-1&&y>=destination);
  if(boundary!==undefined){wheelGate={at:boundary,direction};moveTo(boundary);}else moveTo(destination);
 }
-function wheelMove(delta,input){navigateBy(Math.max(-innerHeight*2,Math.min(innerHeight*2,delta*(input==='touch'?1.2:1.6))))}
+function wheelMove(delta,input){if(mobile.matches&&input==='touch'){wheelGate=null;motion.scrollTo(Math.max(0,Math.min(motion.limit,motion.animatedScroll+delta)),{immediate:true,force:true});return;}navigateBy(Math.max(-innerHeight*2,Math.min(innerHeight*2,delta*(input==='touch'?1.2:1.6))))}
 function keyboard(key,shift){const jumps={ArrowDown:80,ArrowUp:-80,PageDown:innerHeight*.65,PageUp:-innerHeight*.65,' ':innerHeight*.65*(shift?-1:1)};if(key==='Home'){wheelGate=null;moveTo(0)}else if(key==='End'){wheelGate=null;moveTo(motion.limit)}else if(key in jumps)navigateBy(jumps[key]);}
 window.addEventListener('message',e=>{if(![heroFrame.contentWindow,followFrame.contentWindow].includes(e.source)||e.data?.channel!==channel)return;const d=e.data;
  if(d.type==='open-link'){const url=String(d.url||'');if(/^https:\/\/((?:www\.)?corpcore\.com\.br|github\.com|www\.linkedin\.com)(\/|$)/.test(url))window.open(url,'_blank','noopener');else if(/^(mailto:kleionfsa2020@live\.com|tel:\+5575991801820)$/.test(url))location.href=url;}
  else if(d.type==='open-cv')window.open(new URL('assets/Kleyon-Almeida.pdf',location.href).href,'_blank','noopener');
+ else if(d.type==='touch-start'&&mobile.matches){wheelGate=null;motion.scrollTo(motion.animatedScroll,{immediate:true,force:true});}
+ else if(d.type==='touch-end'&&mobile.matches){const velocity=Math.max(-2.5,Math.min(2.5,Number(d.velocity)||0));if(Math.abs(velocity)>.08)motion.scrollTo(motion.animatedScroll+velocity*220,{duration:.65,easing:t=>1-Math.pow(1-t,3),force:true});}
  else if(d.type==='wheel')wheelMove(Number(d.delta)||0,d.input);
- else if(d.type==='follow-petrol')nav.classList.toggle('is-petrol',Boolean(d.petrol));
- else if(d.type==='follow-theme')nav.classList.toggle('is-contact',Boolean(d.contact));
+ else if(d.type==='follow-petrol'){nav.classList.toggle('is-petrol',Boolean(d.petrol));requestUpdate();}
+ else if(d.type==='follow-theme'){nav.classList.toggle('is-contact',Boolean(d.contact));requestUpdate();}
  else if(d.type==='key')keyboard(d.key,d.shift);
  else if(d.type==='hero-ready'&&e.source===heroFrame.contentWindow){heroReady=true;loadingStages.heroLoaded=loadingStages.heroReady=true;loadingProgress();lastHeroActive=null;finishLoading();}
  else if(d.type==='follow-ready'&&e.source===followFrame.contentWindow){followReady=true;loadingStages.followLoaded=loadingStages.followReady=true;loadingProgress();lastFollowActive=null;finishLoading();}

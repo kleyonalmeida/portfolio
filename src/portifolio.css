@@ -41,3 +41,13 @@ html{scrollbar-width:thin;scrollbar-color:#393a35 #efeee8}html::-webkit-scrollba
 
 /* Mobile browser chrome and overscroll match the visible portfolio section. */
 @media(max-width:767px){html,body{background:var(--mobile-page-background,#f8f8f3)}.follow{background:#c5939d}}
+
+/* Language switch shares the navigation palette and keeps both actions together. */
+.nav__actions{display:flex;align-items:center;gap:8px;pointer-events:auto}
+.language-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 11px;border:1px solid #111211;border-radius:5px;background:#111211;color:#fff;font:12px HeadingNow,Arial,sans-serif;cursor:pointer;transition:background-color .2s,color .2s,border-color .2s}
+.language-toggle:hover{background:#33352f}.language-toggle:focus-visible{outline:2px solid #20231d;outline-offset:4px}.nav.is-petrol .language-toggle:focus-visible,.nav.is-contact .language-toggle:focus-visible{outline-color:#fff}
+.nav.is-petrol .language-toggle{background:#eaf4f0;color:#104a4d;border-color:#eaf4f0}.nav.is-petrol .language-toggle:hover{background:#fff}
+.nav.is-contact .language-toggle{background:#f4f4ef;color:#111211;border-color:#f4f4ef}.nav.is-contact .language-toggle:hover{background:#fff}
+@media(max-width:600px){.nav__actions{gap:6px}.language-toggle{min-width:35px;height:36px;padding:0 8px;font-size:11px}}
+@media(max-width:400px){.nav__center{left:45%}.brand{max-width:82px}.nav__center small{font-size:7px}.nav__link{padding:11px 9px}}
+@media(prefers-reduced-motion:reduce){.language-toggle{transition:none}}

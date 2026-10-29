@@ -19,3 +19,7 @@ Abra `index.html` ou `Abrir.cmd`. Não é necessário executar um build nem ter 
 As cinco imagens raster utilizadas estão incorporadas nos documentos das respectivas cenas, uma vez cada: retrato, robô, ruído, CorpCore e Sendium. Os ícones são SVGs incorporados. Não há mais registro de recursos por blobs nem arquivos dos sites completos.
 
 O conteúdo agora está diretamente no HTML; não existe código montando um site antigo para depois esconder ou substituir suas seções. Os projetos originais e os backups ficam fora desta pasta. Não reutilize o antigo build.py, que copiava os catálogos completos.
+
+## Idiomas
+
+O botão EN/PT alterna os textos da página e guarda a preferência no navegador. As traduções locais ficam em `src/i18n.js`; ao editar um texto em português no HTML, atualize também sua entrada em inglês. Não há dependência de um serviço externo de tradução. O currículo PDF permanece em português, identificado no link em inglês.

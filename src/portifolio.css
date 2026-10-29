@@ -33,11 +33,11 @@ html{scrollbar-width:thin;scrollbar-color:#393a35 #efeee8}html::-webkit-scrollba
 @media(max-width:767px){.hero-about{left:20px;top:98px;width:calc(100% - 40px);max-width:none}.hero-about h1{font-size:23vw;width:58%;margin-bottom:140px;line-height:.9}.hero-about__copy{font-size:16px;line-height:1.45;background:#f8f8f3;position:relative;padding:0 0 24px}.hero-about__copy p{margin-bottom:20px}}
 @media(prefers-reduced-motion:reduce){.hero iframe,.hero-about{will-change:auto}}
 
-.hero-about h1{text-transform:uppercase}.nav.is-contact{color:#f4f4ef!important;background:#111211!important}.nav.is-contact .nav__link{color:#f4f4ef;border-color:#ffffff55;background:#ffffff14}
+.hero-about h1{text-transform:uppercase}.nav.is-contact{color:#f4f4ef!important;background:none!important}.nav.is-contact .nav__link{color:#f4f4ef;border-color:#ffffff55;background:#ffffff14}
 
 .hero-about h1 span{-webkit-text-stroke:2.6px #20231d;text-shadow:0 0 .4px #20231d}
 
-.nav.is-petrol{color:#eaf4f0;background:#104a4d}.nav.is-petrol .nav__link{color:#eaf4f0;background:#ffffff12;border-color:#ffffff45}
+.nav.is-petrol{color:#eaf4f0;background:none}.nav.is-petrol .nav__link{color:#eaf4f0;background:#ffffff12;border-color:#ffffff45}
 
 /* Mobile browser chrome and overscroll match the visible portfolio section. */
 @media(max-width:767px){html,body{background:var(--mobile-page-background,#f8f8f3)}.follow{background:#c5939d}}
